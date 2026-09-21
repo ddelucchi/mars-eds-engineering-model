@@ -1,6 +1,5 @@
 # Mars EDS Engineering Model
 
-[![CI](https://github.com/ddelucchi/mars-eds-engineering-model/actions/workflows/ci.yml/badge.svg)](https://github.com/ddelucchi/mars-eds-engineering-model/actions/workflows/ci.yml)
 ![Python](https://img.shields.io/badge/python-3.10%2B-blue)
 ![Status](https://img.shields.io/badge/status-concept--level%20engineering%20model-orange)
 
