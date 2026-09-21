@@ -51,3 +51,18 @@ matched:
 
 Only after that matched-configuration comparison should the model be used to
 predict a new geometry with quantified uncertainty.
+
+## Adhesion-model benchmark
+
+The smooth sphere-plane Hamaker expression is intentionally treated as an upper
+reference rather than a calibrated Mars contact law. NASA adhesion studies note
+that short-range van der Waals forces are highly sensitive to particle and
+substrate roughness, and measured forces for nonideal surfaces can fall below
+ideal theoretical values. Other NASA work reports that contaminants and surface
+topography can reduce adhesion substantially.
+
+For that reason, the repository exposes `effective_vdw_scale` and reports the
+largest scale for which the configured electric lift would close the static
+force balance. The default remains 1.0. A reduced value must come from a
+specific surface/contact model or measurement, not from matching the desired
+drive voltage.
