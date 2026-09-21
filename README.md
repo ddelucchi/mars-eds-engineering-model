@@ -98,8 +98,8 @@ Every returned force is in SI units.
 
 ## Verification status
 
-Automated tests verify analytical scaling and software behavior on Python
-3.10-3.12. They do **not** constitute physical validation.
+The test suite verifies analytical scaling and software behavior for the supported
+Python package. These software checks do **not** constitute physical validation.
 
 See [`docs/verification-and-validation.md`](docs/verification-and-validation.md)
 for the explicit verification boundary and a proposed validation ladder from
