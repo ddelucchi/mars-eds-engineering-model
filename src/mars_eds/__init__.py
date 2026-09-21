@@ -7,6 +7,7 @@ from .model import (
     Particle,
     ejection_margin,
     force_budget,
+    maximum_vdw_scale_for_ejection,
     required_peak_voltage,
 )
 
@@ -17,6 +18,7 @@ __all__ = [
     "Particle",
     "ejection_margin",
     "force_budget",
+    "maximum_vdw_scale_for_ejection",
     "required_peak_voltage",
 ]
 
