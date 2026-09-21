@@ -34,6 +34,7 @@ class Particle:
     separation_m: float = 0.4e-9
     surface_charge_fraction: float = 0.25
     charge_reference_field_v_m: float = 25_000.0
+    effective_vdw_scale: float = 1.0
 
 
 @dataclass(frozen=True)
@@ -75,8 +76,8 @@ def gravity_force(particle: Particle, env: MarsEnvironment = MarsEnvironment()) 
     return particle_mass(particle) * env.gravity_m_s2
 
 
-def van_der_waals_force(particle: Particle) -> float:
-    """Sphere-plane Hamaker approximation: F = A R / (6 z^2)."""
+def ideal_van_der_waals_force(particle: Particle) -> float:
+    """Ideal smooth sphere-plane Hamaker force: F = A R / (6 z^2)."""
 
     _require_positive("particle.hamaker_constant_j", particle.hamaker_constant_j)
     _require_positive("particle.separation_m", particle.separation_m)
@@ -85,6 +86,20 @@ def van_der_waals_force(particle: Particle) -> float:
         * particle.radius_m
         / (6.0 * particle.separation_m**2)
     )
+
+
+def van_der_waals_force(particle: Particle) -> float:
+    """Effective vdW adhesion after an explicit contact-reduction factor.
+
+    effective_vdw_scale=1 preserves the ideal smooth-contact Hamaker estimate.
+    Values below one represent reduced real contact from roughness, coatings,
+    contamination, or other unresolved contact-scale effects. The factor is an
+    uncertainty/design parameter, not a fitted default.
+    """
+
+    if not 0.0 <= particle.effective_vdw_scale <= 1.0:
+        raise ValueError("effective_vdw_scale must be between 0 and 1")
+    return particle.effective_vdw_scale * ideal_van_der_waals_force(particle)
 
 
 def estimated_particle_charge(
@@ -236,3 +251,26 @@ def required_peak_voltage(
     if a > 0:
         return retention / a
     return float("inf")
+
+
+def maximum_vdw_scale_for_ejection(
+    particle: Particle,
+    drive: Drive = Drive(),
+    geometry: ElectrodeGeometry = ElectrodeGeometry(),
+    env: MarsEnvironment = MarsEnvironment(),
+) -> float:
+    """Maximum fraction of ideal vdW adhesion compatible with static lift.
+
+    A value of 1 means modeled electric lift can overcome the ideal
+    smooth-contact Hamaker term plus gravity. A value of 1e-3 means effective
+    vdW adhesion must be at or below 0.1% of that ideal estimate under the
+    other stated assumptions. Negative values mean gravity alone exceeds
+    modeled electric lift.
+    """
+
+    lift = coulomb_force(particle, drive, geometry, env) + dep_force(
+        particle, drive, geometry, env
+    )
+    gravity = gravity_force(particle, env)
+    ideal_vdw = ideal_van_der_waals_force(particle)
+    return (lift - gravity) / ideal_vdw

@@ -9,7 +9,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 
 from .config import load_config
-from .model import Particle, force_budget, required_peak_voltage
+from .model import (
+    Particle,
+    force_budget,
+    maximum_vdw_scale_for_ejection,
+    required_peak_voltage,
+)
 
 
 def main() -> None:
@@ -41,7 +46,10 @@ def main() -> None:
                     hamaker_constant_j=baseline_particle.hamaker_constant_j,
                     separation_m=baseline_particle.separation_m,
                     surface_charge_fraction=baseline_particle.surface_charge_fraction,
-                    charge_reference_field_v_m=baseline_particle.charge_reference_field_v_m,
+                    charge_reference_field_v_m=(
+                        baseline_particle.charge_reference_field_v_m
+                    ),
+                    effective_vdw_scale=baseline_particle.effective_vdw_scale,
                 ),
                 geometry,
                 env,
@@ -71,8 +79,18 @@ def main() -> None:
     print("Configured baseline particle force budget")
     for name, value in budget.items():
         print(f"{name:>20}: {value:.6e}")
+    max_scale = maximum_vdw_scale_for_ejection(
+        baseline_particle, drive, geometry, env
+    )
+    print(f"{'max_vdw_scale':>20}: {max_scale:.6e}")
     print(
-        "\nNOTE: balance voltage is an unvalidated screening result, not a safe "
+        "\nNOTE: max_vdw_scale is the largest fraction of the ideal "
+        "smooth-contact Hamaker adhesion compatible with static lift at the "
+        "configured drive. It is a design/sensitivity requirement, not a "
+        "fitted material value."
+    )
+    print(
+        "Balance voltage is an unvalidated screening result, not a safe "
         "hardware voltage. See docs/verification-and-validation.md."
     )
 

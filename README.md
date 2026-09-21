@@ -46,13 +46,23 @@ and transport dust through electrostatic and dielectrophoretic forces, while
 Mars applications must explicitly contend with low-pressure electrical
 breakdown.
 
+### A deliberately exposed closure problem
+
+With the default **ideal smooth-contact** Hamaker adhesion assumption, the
+configured 1.5 um particle does **not** lift at 1.5 kV peak in this low-order
+model. The baseline run reports the effective-contact reduction that would be
+required before the static force balance closes. This is intentional: surface
+roughness, real contact area, coatings, charging, and electrode-field structure
+are large uncertainties, so the repository reports the requirement instead of
+silently tuning an adhesion factor until the design "works."
+
 ## Model architecture
 
 | Layer | Current treatment | Engineering boundary |
 |---|---|---|
 | Mars environment | gravity + documented pressure/temperature context | no atmospheric/plasma solver |
 | particle | spherical radius, density, permittivity | no irregular-shape/contact distribution |
-| adhesion | Hamaker sphere-plane vdW term | no full JKR/DMT/roughness model |
+| adhesion | ideal Hamaker term + explicit effective-contact scale | no resolved asperity/contact model |
 | charge | bounded surface-charge proxy | no triboelectric/plasma charging dynamics |
 | electric field | `E ~ V/L` scale | no FEM electrode field map yet |
 | DEP | dipole expression with `grad(E^2) ~ E^2/L` | screening approximation |
@@ -78,8 +88,10 @@ mars-eds-baseline
 The default run reads `configs/baseline.json`, so every headline parameter is
 visible in one reviewable file instead of being buried in source code.
 
-The baseline command prints a force budget for a 1.5 um particle and writes a
-particle-size voltage sweep to `results/baseline_voltage_sweep.png`.
+The baseline command prints a force budget for a 1.5 um particle, reports the
+maximum effective van der Waals scale compatible with static lift at the
+configured drive, and writes a particle-size voltage sweep to
+`results/baseline_voltage_sweep.png`.
 
 ## Programmatic use
 
@@ -130,7 +142,7 @@ screening model to chamber-correlated engineering model.
 The original project workspace contained broader exploratory scripts, including
 a generic hybrid dust-mitigation model and a large multipurpose particle
 dynamics program. Those files are preserved under `archive/` for provenance but
-are intentionally excluded from the supported package and CI.
+are intentionally excluded from the supported package and test suite.
 
 This separation prevents historical experiments from being mistaken for the
 current Mars EDS engineering model.

@@ -7,6 +7,7 @@ from mars_eds.model import (
     Particle,
     dep_force,
     ejection_margin,
+    maximum_vdw_scale_for_ejection,
     particle_mass,
     required_peak_voltage,
     van_der_waals_force,
@@ -45,3 +46,28 @@ def test_required_voltage_is_finite_and_positive() -> None:
 def test_invalid_radius_rejected() -> None:
     with pytest.raises(ValueError):
         particle_mass(Particle(radius_m=0.0))
+
+
+def test_effective_vdw_scale_reduces_adhesion_explicitly() -> None:
+    full = van_der_waals_force(
+        Particle(radius_m=1e-6, effective_vdw_scale=1.0)
+    )
+    tenth = van_der_waals_force(
+        Particle(radius_m=1e-6, effective_vdw_scale=0.1)
+    )
+    assert tenth / full == pytest.approx(0.1)
+
+
+def test_baseline_reports_contact_reduction_requirement() -> None:
+    particle = Particle(radius_m=0.75e-6)
+    scale = maximum_vdw_scale_for_ejection(
+        particle, Drive(peak_voltage_v=1500.0)
+    )
+    assert 0.0 < scale < 1.0
+
+
+def test_invalid_vdw_scale_rejected() -> None:
+    with pytest.raises(ValueError):
+        van_der_waals_force(
+            Particle(radius_m=1e-6, effective_vdw_scale=1.1)
+        )
