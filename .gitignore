@@ -1,0 +1,11 @@
+# Python local artifacts
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.ipynb_checkpoints/
+
+# Figures written when scripts run from the repository root
+/particle_network.png
+/graph_*.png
+/graph_*.pdf
