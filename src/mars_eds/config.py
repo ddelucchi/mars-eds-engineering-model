@@ -27,6 +27,7 @@ def load_config(
         separation_m=float(p_data["separation_m"]),
         surface_charge_fraction=float(p_data["surface_charge_fraction"]),
         charge_reference_field_v_m=float(p_data["charge_reference_field_v_m"]),
+        effective_vdw_scale=float(p_data.get("effective_vdw_scale", 1.0)),
     )
     geometry = ElectrodeGeometry(
         electrode_width_m=float(g_data["electrode_width_um"]) * 1e-6,
