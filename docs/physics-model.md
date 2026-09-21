@@ -18,15 +18,13 @@ roughness, contact geometry, and agglomeration are not resolved.
 
 The baseline van der Waals term uses a sphere-plane Hamaker approximation,
 
-`F_vdW = A_H R / (6 z_0^2)`.
+`F_vdW,ideal = A_H R / (6 z_0^2)`.\n\nThe supported model then exposes an effective-contact factor `s_vdW`,\n\n`F_vdW = s_vdW F_vdW,ideal`, with `0 <= s_vdW <= 1`.
 
 `A_H` is a Hamaker constant and `z_0` is an effective separation. These are
 uncertain inputs and should be swept rather than treated as exact material
-constants.
+constants. `s_vdW=1` deliberately preserves the ideal smooth-contact estimate;\nvalues below one represent unresolved reductions in real contact from roughness,\nsurface topology, coatings, or contamination. It is not assigned a favorable\ndefault.
 
-Electrostatic adhesion, capillary forces, surface roughness distributions, and
-contact-mechanics corrections are not presently modeled as separate retention
-terms.
+Electrostatic adhesion, surface-roughness distributions, and JKR/DMT-style\ncontact mechanics are not resolved explicitly. Instead, the model can invert\nthe force balance and report the **maximum `s_vdW` compatible with lift** at a\ngiven drive. That output is a design/validation requirement, not a measured\nmaterial property.
 
 ## 3. Charge proxy and Coulomb force
 
