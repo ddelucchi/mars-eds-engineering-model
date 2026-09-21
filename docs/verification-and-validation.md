@@ -13,7 +13,7 @@ behavior:
 - the analytical required-voltage solution is finite for the baseline case;
 - invalid physical inputs are rejected.
 
-CI runs the tests and static lint checks on Python 3.10, 3.11, and 3.12.
+The repository includes unit tests for the supported package. They were run locally during the hardening pass; physical validation remains a separate requirement.
 
 ## What is not yet validated
 
