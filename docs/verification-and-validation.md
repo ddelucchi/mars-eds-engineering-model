@@ -2,8 +2,7 @@
 
 ## What is verified in this repository
 
-The automated test suite checks software-level invariants and basic analytical
-behavior:
+The test suite checks software-level invariants and basic analytical behavior:
 
 - particle mass scales as radius cubed;
 - the baseline Hamaker sphere-plane term scales linearly with radius;
@@ -11,9 +10,9 @@ behavior:
   than the surrounding medium;
 - modeled lift margin increases with drive voltage;
 - the analytical required-voltage solution is finite for the baseline case;
-- invalid physical inputs are rejected.
+- invalid physical inputs are rejected;\n- the effective-adhesion scale changes vdW force exactly as declared;\n- the model reports a finite contact-reduction requirement for the concept baseline.
 
-The repository includes unit tests for the supported package. They were run locally during the hardening pass; physical validation remains a separate requirement.
+The repository includes 10 unit tests for the supported package. They were run\nlocally during the hardening pass; physical validation remains a separate\nrequirement.
 
 ## What is not yet validated
 
